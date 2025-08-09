@@ -59,7 +59,7 @@ Pure transform round-trips (no serialization):
 - Persistence work dominates end-to-end cost:
   - JSON here is a stand-in for database driver encode/decode and IO. In real systems, the serialization/IO path (driver scanning, network, syscalls) dominates time and allocations much more than small in-memory transforms.
 - Encapsulation overhead is small but measurable when isolated:
-  - No-JSON round trips show ~+87 ns/op (~+200 ns/op with more deeply nested aggregates) and +2 allocs/op for the encapsulated path due to extra representations and slice/struct copies.
+  - No-JSON round trips show ~+87 ns/op (or \~+200 ns/op with more deeply nested aggregates) and +2 allocs/op for the encapsulated path due to extra representations and slice/struct copies.
 - Domain-shape vs persistence-shape matters:
   - When the serialized shape matches tables (persistence shape), both variants pay similar serialization cost; the remaining difference is the transform overhead. With domain-shape JSON, encap also pays a JSON-shape cost, widening the gap (e.g. this is more like comparing using a document-style database vs relational)
 - Occasional “encap faster” ns/op readings are noise:
