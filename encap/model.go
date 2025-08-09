@@ -1,6 +1,10 @@
 package encap
 
-import "time"
+import (
+	"time"
+
+	"github.com/alechenninger/go-ddd-bench/internal/clock"
+)
 
 // Snapshot is a DTO representing the Order's domain state, without persistence concerns.
 type Snapshot struct {
@@ -54,8 +58,8 @@ func NewOrder(id, customer string, shipping SnapshotAddress) *Order {
 		customer:  customer,
 		shipping:  address{street: shipping.Street, city: shipping.City, state: shipping.State, zip: shipping.Zip},
 		items:     nil,
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
+		createdAt: clock.Now(),
+		updatedAt: clock.Now(),
 	}
 }
 
@@ -69,7 +73,7 @@ func (o *Order) UpdateShipping(s SnapshotAddress) {
 	o.touch()
 }
 
-func (o *Order) touch() { o.updatedAt = time.Now() }
+func (o *Order) touch() { o.updatedAt = clock.Now() }
 
 // ToSnapshot exposes state for serialization elsewhere.
 func (o *Order) ToSnapshot() Snapshot {

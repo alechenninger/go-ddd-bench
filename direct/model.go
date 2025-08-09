@@ -1,6 +1,10 @@
 package direct
 
-import "time"
+import (
+	"time"
+
+	"github.com/alechenninger/go-ddd-bench/internal/clock"
+)
 
 // Address is embedded as a public struct to allow direct (de)serialization.
 type Address struct {
@@ -37,4 +41,4 @@ func (o *Order) UpdateShipping(addr Address) {
 	o.touch()
 }
 
-func (o *Order) touch() { o.UpdatedAt = time.Now() }
+func (o *Order) touch() { o.UpdatedAt = clock.Now() }

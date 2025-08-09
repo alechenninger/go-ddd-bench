@@ -8,6 +8,7 @@ import (
 
 	"github.com/alechenninger/go-ddd-bench/direct"
 	"github.com/alechenninger/go-ddd-bench/encap"
+	"github.com/alechenninger/go-ddd-bench/internal/clock"
 )
 
 func randID() string {
@@ -24,8 +25,8 @@ func seedDirectRepo(n int) *direct.DirectRepo {
 			Customer:  "cust",
 			Shipping:  direct.Address{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"},
 			Items:     []direct.LineItem{{SKU: "A", Quantity: 1, PriceCents: 1234}, {SKU: "B", Quantity: 2, PriceCents: 555}},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: clock.Now(),
+			UpdatedAt: clock.Now(),
 		}
 		_ = repo.Save(order)
 	}
@@ -50,6 +51,9 @@ const (
 
 // BenchmarkDirect_RMW simulates read-modify-write via direct (de)serialization.
 func BenchmarkDirect_RMW(b *testing.B) {
+	restore := clock.UseMonotonicFake(time.Unix(0, 0), time.Nanosecond)
+	defer restore()
+
 	repo := seedDirectRepo(nSeed)
 	ids := make([]string, 0, nSeed)
 	for id := range repo.DataUnsafeForBench() { // helper method returns map copy
@@ -73,6 +77,9 @@ func BenchmarkDirect_RMW(b *testing.B) {
 
 // BenchmarkEncap_RMW simulates read-modify-write via snapshot + persistence DTO transforms.
 func BenchmarkEncap_RMW(b *testing.B) {
+	restore := clock.UseMonotonicFake(time.Unix(0, 0), time.Nanosecond)
+	defer restore()
+
 	repo := seedEncapRepo(nSeed)
 	ids := make([]string, 0, nSeed)
 	for id := range repo.DataUnsafeForBench() { // helper method returns map copy

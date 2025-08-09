@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/alechenninger/go-ddd-bench/internal/clock"
 )
 
 var sinkDirect any
@@ -24,8 +26,8 @@ func seedDirectOrders(n int) []*Order {
 			Customer:  "cust",
 			Shipping:  Address{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"},
 			Items:     []LineItem{{SKU: "A", Quantity: 1, PriceCents: 1234}, {SKU: "B", Quantity: 2, PriceCents: 555}},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: clock.Now(),
+			UpdatedAt: clock.Now(),
 		}
 		orders = append(orders, o)
 	}
@@ -39,6 +41,8 @@ func roundTripDirect(o *Order) *Order {
 }
 
 func BenchmarkDirect_RoundTrip_NoJSON(b *testing.B) {
+	restore := clock.UseMonotonicFake(time.Unix(0, 0), time.Nanosecond)
+	defer restore()
 	orders := seedDirectOrders(1024)
 	b.ReportAllocs()
 	b.ResetTimer()

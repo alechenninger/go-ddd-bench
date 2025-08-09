@@ -1,0 +1,54 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench
+cpu: Apple M1 Pro
+BenchmarkDirectFlat_JSON_RMW 	  344914	    152897 ns/op	   44305 B/op	     197 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  251965	    115401 ns/op	   34131 B/op	     150 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  369248	    164656 ns/op	   48607 B/op	     209 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  362839	    162153 ns/op	   47525 B/op	     206 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  367411	    163846 ns/op	   48300 B/op	     208 allocs/op
+BenchmarkEncap_JSON_RMW      	  330002	    156537 ns/op	   79081 B/op	     196 allocs/op
+BenchmarkEncap_JSON_RMW      	  335960	    156884 ns/op	   80265 B/op	     199 allocs/op
+BenchmarkEncap_JSON_RMW      	  335392	    157791 ns/op	   80154 B/op	     199 allocs/op
+BenchmarkEncap_JSON_RMW      	  329245	    156085 ns/op	   78927 B/op	     196 allocs/op
+BenchmarkEncap_JSON_RMW      	  322502	    153424 ns/op	   77615 B/op	     192 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench	521.193s
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench
+cpu: Apple M1 Pro
+BenchmarkDirect_RMW 	  438402	    123229 ns/op	   31028 B/op	      25 allocs/op
+BenchmarkDirect_RMW 	  448291	    126574 ns/op	   31601 B/op	      25 allocs/op
+BenchmarkDirect_RMW 	  448376	    127022 ns/op	   31606 B/op	      25 allocs/op
+BenchmarkDirect_RMW 	  446811	    126696 ns/op	   31516 B/op	      25 allocs/op
+BenchmarkDirect_RMW 	  433117	    123301 ns/op	   30717 B/op	      25 allocs/op
+BenchmarkEncap_RMW  	  340881	    161031 ns/op	   81351 B/op	     202 allocs/op
+BenchmarkEncap_RMW  	  333036	    157219 ns/op	   79689 B/op	     198 allocs/op
+BenchmarkEncap_RMW  	  336969	    158589 ns/op	   80462 B/op	     200 allocs/op
+BenchmarkEncap_RMW  	  333603	    157593 ns/op	   79801 B/op	     198 allocs/op
+BenchmarkEncap_RMW  	  339334	    159991 ns/op	   80942 B/op	     201 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench	546.558s
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench/direct
+cpu: Apple M1 Pro
+BenchmarkDirect_RoundTrip_NoJSON 	21783487	       157.3 ns/op	     336 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	22070492	       152.5 ns/op	     336 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	23199145	       152.9 ns/op	     336 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	22965291	       151.8 ns/op	     336 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	22913298	       162.7 ns/op	     336 B/op	       3 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench/direct	18.660s
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench/encap
+cpu: Apple M1 Pro
+BenchmarkEncap_RoundTrip_NoJSON 	14710333	       238.4 ns/op	     464 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	14984557	       247.8 ns/op	     464 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	14896369	       240.4 ns/op	     464 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	14711290	       239.7 ns/op	     464 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	14499934	       250.7 ns/op	     464 B/op	       5 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench/encap	19.414s

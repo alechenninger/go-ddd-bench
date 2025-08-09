@@ -1,0 +1,7 @@
+BENCHMARK                              med ns/op      med B/op    med allocs  |    mean ns/op     mean B/op   mean allocs  |  n
+BenchmarkDirectFlat_JSON_RMW          162153.000         47525           206  |    151790.600         44574        194.00  |  5
+BenchmarkDirect_RMW                   126574.000         31516            25  |    125364.400         31294         25.00  |  5
+BenchmarkDirect_RoundTrip_NoJSON         152.900           336             3  |       155.440           336          3.00  |  5
+BenchmarkEncap_JSON_RMW               156537.000         79081           196  |    156144.200         79208        196.40  |  5
+BenchmarkEncap_RMW                    158589.000         80462           200  |    158884.600         80449        199.80  |  5
+BenchmarkEncap_RoundTrip_NoJSON          240.400           464             5  |       243.400           464          5.00  |  5

@@ -5,6 +5,9 @@ import (
 	"encoding/hex"
 	"runtime"
 	"testing"
+	"time"
+
+	"github.com/alechenninger/go-ddd-bench/internal/clock"
 )
 
 var sinkEncap any
@@ -35,6 +38,8 @@ func roundTripEncap(o *Order) *Order {
 }
 
 func BenchmarkEncap_RoundTrip_NoJSON(b *testing.B) {
+	restore := clock.UseMonotonicFake(time.Unix(0, 0), time.Nanosecond)
+	defer restore()
 	orders := seedEncapOrders(1024)
 	b.ReportAllocs()
 	b.ResetTimer()
