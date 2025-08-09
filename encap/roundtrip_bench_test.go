@@ -21,9 +21,12 @@ func randID() string {
 func seedEncapOrders(n int) []*Order {
 	orders := make([]*Order, 0, n)
 	for i := 0; i < n; i++ {
-		o := NewOrder(randID(), "cust", SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"})
-		o.AddItem("A", 1, 1234)
-		o.AddItem("B", 2, 555)
+		cust := SnapshotCustomer{Name: SnapshotName{First: "Ada", Last: "Lovelace"}, Email: "ada@example.com", Loyalty: SnapshotLoyalty{Tier: "gold", Points: 100}}
+		ship := SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"}
+		bill := SnapshotAddress{Street: "2 Main", City: "Town", State: "CA", Zip: "94000"}
+		o := NewOrder(randID(), cust, ship, bill)
+		o.AddItem("A", 1, 1234, "USD", SnapshotItemFlags{})
+		o.AddItem("B", 2, 555, "USD", SnapshotItemFlags{Backorder: true})
 		orders = append(orders, o)
 	}
 	return orders

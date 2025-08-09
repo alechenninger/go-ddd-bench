@@ -21,13 +21,20 @@ func seedDirectRepo(n int) *direct.DirectRepo {
 	repo := direct.NewDirectRepo()
 	for i := 0; i < n; i++ {
 		order := &direct.Order{
-			ID:        randID(),
-			Customer:  "cust",
+			ID: randID(),
+			Customer: direct.Customer{
+				Name:    direct.Name{First: "Ada", Last: "Lovelace"},
+				Email:   "ada@example.com",
+				Loyalty: direct.Loyalty{Tier: "gold", Points: 100},
+			},
 			Shipping:  direct.Address{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"},
-			Items:     []direct.LineItem{{SKU: "A", Quantity: 1, PriceCents: 1234}, {SKU: "B", Quantity: 2, PriceCents: 555}},
+			Billing:   direct.Address{Street: "2 Main", City: "Town", State: "CA", Zip: "94000"},
+			Items:     nil,
 			CreatedAt: clock.Now(),
 			UpdatedAt: clock.Now(),
 		}
+		order.AddItem("A", 1, 1234, "USD", direct.ItemFlags{})
+		order.AddItem("B", 2, 555, "USD", direct.ItemFlags{Backorder: true})
 		_ = repo.Save(order)
 	}
 	return repo
@@ -36,9 +43,12 @@ func seedDirectRepo(n int) *direct.DirectRepo {
 func seedEncapRepo(n int) *encap.Repo {
 	repo := encap.NewRepo()
 	for i := 0; i < n; i++ {
-		order := encap.NewOrder(randID(), "cust", encap.SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"})
-		order.AddItem("A", 1, 1234)
-		order.AddItem("B", 2, 555)
+		cust := encap.SnapshotCustomer{Name: encap.SnapshotName{First: "Ada", Last: "Lovelace"}, Email: "ada@example.com", Loyalty: encap.SnapshotLoyalty{Tier: "gold", Points: 100}}
+		ship := encap.SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"}
+		bill := encap.SnapshotAddress{Street: "2 Main", City: "Town", State: "CA", Zip: "94000"}
+		order := encap.NewOrder(randID(), cust, ship, bill)
+		order.AddItem("A", 1, 1234, "USD", encap.SnapshotItemFlags{})
+		order.AddItem("B", 2, 555, "USD", encap.SnapshotItemFlags{Backorder: true})
 		_ = repo.Save(order)
 	}
 	return repo
@@ -67,7 +77,7 @@ func BenchmarkDirect_RMW(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		order.AddItem("C", 1, 99)
+		order.AddItem("C", 1, 99, "USD", direct.ItemFlags{Digital: true})
 		if err := repo.Save(order); err != nil {
 			b.Fatal(err)
 		}
@@ -93,7 +103,7 @@ func BenchmarkEncap_RMW(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		order.AddItem("C", 1, 99)
+		order.AddItem("C", 1, 99, "USD", encap.SnapshotItemFlags{Digital: true})
 		if err := repo.Save(order); err != nil {
 			b.Fatal(err)
 		}

@@ -23,12 +23,15 @@ func seedDirectOrders(n int) []*Order {
 	for i := 0; i < n; i++ {
 		o := &Order{
 			ID:        randID(),
-			Customer:  "cust",
+			Customer:  Customer{Name: Name{First: "Ada", Last: "Lovelace"}, Email: "ada@example.com", Loyalty: Loyalty{Tier: "gold", Points: 100}},
 			Shipping:  Address{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"},
-			Items:     []LineItem{{SKU: "A", Quantity: 1, PriceCents: 1234}, {SKU: "B", Quantity: 2, PriceCents: 555}},
+			Billing:   Address{Street: "2 Main", City: "Town", State: "CA", Zip: "94000"},
+			Items:     nil,
 			CreatedAt: clock.Now(),
 			UpdatedAt: clock.Now(),
 		}
+		o.AddItem("A", 1, 1234, "USD", ItemFlags{})
+		o.AddItem("B", 2, 555, "USD", ItemFlags{Backorder: true})
 		orders = append(orders, o)
 	}
 	return orders

@@ -34,24 +34,25 @@ To avoid `time.Now()` syscall noise, all benchmarks use a shared fake clock (`in
 
 ### Aggregation method
 
-- We report the median across 5 runs per benchmark. Median is preferred over mean for microbenchmarks to reduce the influence of outliers and GC jitter.
+- We report the median across repeated runs per benchmark. Median is preferred over mean for microbenchmarks to reduce the influence of outliers and GC jitter.
+- The figures below come from runs with: `-benchtime=2s -count=3 -cpu=1`.
 
-### Results (median of stable runs)
+### Results (median of 2s x3 runs)
 
-RMW with identical JSON persistence shape (apples-to-apples JSON cost):
+RMW with identical persistence shape (apples-to-apples serialization cost):
 
-- DirectFlat_JSON_RMW: 162.153 µs/op, 47,525 B/op, 206 allocs/op
-- Encap_JSON_RMW: 156.537 µs/op, 79,081 B/op, 196 allocs/op
+- DirectFlat_JSON_RMW: 110.495 µs/op, 30,767 B/op, 186 allocs/op
+- Encap_JSON_RMW: 109.545 µs/op, 55,145 B/op, 178 allocs/op
 
 RMW with domain JSON shapes (includes JSON-shape differences):
 
-- Direct_RMW: 126.574 µs/op, 31,516 B/op, 25 allocs/op
-- Encap_RMW: 158.589 µs/op, 80,462 B/op, 200 allocs/op
+- Direct_RMW: 102.988 µs/op, 20,703 B/op, 104 allocs/op
+- Encap_RMW: 109.346 µs/op, 55,194 B/op, 178 allocs/op
 
-Pure transform round-trips (no JSON):
+Pure transform round-trips (no serialization):
 
-- Direct_RoundTrip_NoJSON: 152.9 ns/op, 336 B/op, 3 allocs/op
-- Encap_RoundTrip_NoJSON: 240.4 ns/op, 464 B/op, 5 allocs/op
+- Direct_RoundTrip_NoJSON: 243.0 ns/op, 544 B/op, 3 allocs/op
+- Encap_RoundTrip_NoJSON: 437.9 ns/op, 768 B/op, 5 allocs/op
 
 ### Findings
 

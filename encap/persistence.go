@@ -9,14 +9,22 @@ import (
 // RDBMS-oriented DTOs (tables) — flat structures intended for persistence.
 // OrderHeader corresponds to an orders table.
 type OrderHeader struct {
-	ID        string
-	Customer  string
-	Street    string
-	City      string
-	State     string
-	Zip       string
-	CreatedAt int64 // unix nanos for storage-form convenience
-	UpdatedAt int64
+	ID            string
+	CustomerFirst string
+	CustomerLast  string
+	CustomerEmail string
+	LoyaltyTier   string
+	LoyaltyPoints int
+	Street        string
+	City          string
+	State         string
+	Zip           string
+	BillStreet    string
+	BillCity      string
+	BillState     string
+	BillZip       string
+	CreatedAt     int64 // unix nanos for storage-form convenience
+	UpdatedAt     int64
 }
 
 // OrderItemRow corresponds to an order_items table.
@@ -25,6 +33,9 @@ type OrderItemRow struct {
 	SKU        string
 	Quantity   int
 	PriceCents int64
+	Currency   string
+	Backorder  bool
+	Digital    bool
 }
 
 // persistenceRecord simulates multiple tables grouped together for a single aggregate.
@@ -86,34 +97,47 @@ func (r *Repo) DataUnsafeForBench() map[string]struct{} {
 func toPersistenceRecord(s Snapshot) persistenceRecord {
 	rec := persistenceRecord{
 		Header: OrderHeader{
-			ID:        s.ID,
-			Customer:  s.Customer,
-			Street:    s.Shipping.Street,
-			City:      s.Shipping.City,
-			State:     s.Shipping.State,
-			Zip:       s.Shipping.Zip,
-			CreatedAt: s.CreatedAt.UnixNano(),
-			UpdatedAt: s.UpdatedAt.UnixNano(),
+			ID:            s.ID,
+			CustomerFirst: s.Customer.Name.First,
+			CustomerLast:  s.Customer.Name.Last,
+			CustomerEmail: s.Customer.Email,
+			LoyaltyTier:   s.Customer.Loyalty.Tier,
+			LoyaltyPoints: s.Customer.Loyalty.Points,
+			Street:        s.Shipping.Street,
+			City:          s.Shipping.City,
+			State:         s.Shipping.State,
+			Zip:           s.Shipping.Zip,
+			BillStreet:    s.Billing.Street,
+			BillCity:      s.Billing.City,
+			BillState:     s.Billing.State,
+			BillZip:       s.Billing.Zip,
+			CreatedAt:     s.CreatedAt.UnixNano(),
+			UpdatedAt:     s.UpdatedAt.UnixNano(),
 		},
 	}
 	rec.Items = make([]OrderItemRow, len(s.Items))
 	for i, it := range s.Items {
-		rec.Items[i] = OrderItemRow{OrderID: s.ID, SKU: it.SKU, Quantity: it.Quantity, PriceCents: it.PriceCents}
+		rec.Items[i] = OrderItemRow{OrderID: s.ID, SKU: it.SKU, Quantity: it.Quantity, PriceCents: it.Price.Cents, Currency: it.Price.Currency, Backorder: it.Flags.Backorder, Digital: it.Flags.Digital}
 	}
 	return rec
 }
 
 func fromPersistenceRecord(rec persistenceRecord) Snapshot {
 	s := Snapshot{
-		ID:        rec.Header.ID,
-		Customer:  rec.Header.Customer,
+		ID: rec.Header.ID,
+		Customer: SnapshotCustomer{
+			Name:    SnapshotName{First: rec.Header.CustomerFirst, Last: rec.Header.CustomerLast},
+			Email:   rec.Header.CustomerEmail,
+			Loyalty: SnapshotLoyalty{Tier: rec.Header.LoyaltyTier, Points: rec.Header.LoyaltyPoints},
+		},
 		Shipping:  SnapshotAddress{Street: rec.Header.Street, City: rec.Header.City, State: rec.Header.State, Zip: rec.Header.Zip},
+		Billing:   SnapshotAddress{Street: rec.Header.BillStreet, City: rec.Header.BillCity, State: rec.Header.BillState, Zip: rec.Header.BillZip},
 		CreatedAt: unixToTime(rec.Header.CreatedAt),
 		UpdatedAt: unixToTime(rec.Header.UpdatedAt),
 	}
 	s.Items = make([]SnapshotLineItem, len(rec.Items))
 	for i, row := range rec.Items {
-		s.Items[i] = SnapshotLineItem{SKU: row.SKU, Quantity: row.Quantity, PriceCents: row.PriceCents}
+		s.Items[i] = SnapshotLineItem{SKU: row.SKU, Quantity: row.Quantity, Price: SnapshotMoney{Cents: row.PriceCents, Currency: row.Currency}, Flags: SnapshotItemFlags{Backorder: row.Backorder, Digital: row.Digital}}
 	}
 	return s
 }

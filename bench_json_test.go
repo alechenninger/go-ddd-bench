@@ -20,9 +20,9 @@ func randID2() string {
 func seedDirectFlatRepo(n int) *directflat.Repo {
 	repo := directflat.NewRepo()
 	for i := 0; i < n; i++ {
-		rec := directflat.NewOrderRecord(randID2(), "cust")
-		rec.AddItem("A", 1, 1234)
-		rec.AddItem("B", 2, 555)
+		rec := directflat.NewOrderRecord(randID2(), "Ada", "Lovelace", "ada@example.com", "gold", 100)
+		rec.AddItem("A", 1, 1234, "USD", false, false)
+		rec.AddItem("B", 2, 555, "USD", true, false)
 		_ = repo.Save(rec)
 	}
 	return repo
@@ -31,9 +31,12 @@ func seedDirectFlatRepo(n int) *directflat.Repo {
 func seedEncapRepo2(n int) *encap.Repo {
 	repo := encap.NewRepo()
 	for i := 0; i < n; i++ {
-		o := encap.NewOrder(randID2(), "cust", encap.SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"})
-		o.AddItem("A", 1, 1234)
-		o.AddItem("B", 2, 555)
+		cust := encap.SnapshotCustomer{Name: encap.SnapshotName{First: "Ada", Last: "Lovelace"}, Email: "ada@example.com", Loyalty: encap.SnapshotLoyalty{Tier: "gold", Points: 100}}
+		ship := encap.SnapshotAddress{Street: "1 Main", City: "Town", State: "CA", Zip: "94000"}
+		bill := encap.SnapshotAddress{Street: "2 Main", City: "Town", State: "CA", Zip: "94000"}
+		o := encap.NewOrder(randID2(), cust, ship, bill)
+		o.AddItem("A", 1, 1234, "USD", encap.SnapshotItemFlags{})
+		o.AddItem("B", 2, 555, "USD", encap.SnapshotItemFlags{Backorder: true})
 		_ = repo.Save(o)
 	}
 	return repo
@@ -57,7 +60,7 @@ func BenchmarkDirectFlat_JSON_RMW(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		rec.AddItem("C", 1, 99)
+		rec.AddItem("C", 1, 99, "USD", false, true)
 		if err := repo.Save(rec); err != nil {
 			b.Fatal(err)
 		}
@@ -81,7 +84,7 @@ func BenchmarkEncap_JSON_RMW(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		o.AddItem("C", 1, 99)
+		o.AddItem("C", 1, 99, "USD", encap.SnapshotItemFlags{Digital: true})
 		if err := repo.Save(o); err != nil {
 			b.Fatal(err)
 		}

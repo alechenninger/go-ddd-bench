@@ -1,0 +1,39 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench
+cpu: Apple M1 Pro
+BenchmarkDirectFlat_JSON_RMW 	  160033	    114561 ns/op	   32242 B/op	     192 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  154537	    110495 ns/op	   30767 B/op	     186 allocs/op
+BenchmarkDirectFlat_JSON_RMW 	  154378	    110457 ns/op	   30725 B/op	     186 allocs/op
+BenchmarkEncap_JSON_RMW      	  139174	    109055 ns/op	   55145 B/op	     178 allocs/op
+BenchmarkEncap_JSON_RMW      	  139308	    109545 ns/op	   55187 B/op	     178 allocs/op
+BenchmarkEncap_JSON_RMW      	  138964	    110015 ns/op	   55078 B/op	     177 allocs/op
+BenchmarkDirect_RMW          	  141334	    102574 ns/op	   20579 B/op	     104 allocs/op
+BenchmarkDirect_RMW          	  142659	    103628 ns/op	   20703 B/op	     104 allocs/op
+BenchmarkDirect_RMW          	  142879	    102988 ns/op	   20724 B/op	     105 allocs/op
+BenchmarkEncap_RMW           	  139329	    109749 ns/op	   55194 B/op	     178 allocs/op
+BenchmarkEncap_RMW           	  139418	    109346 ns/op	   55222 B/op	     178 allocs/op
+BenchmarkEncap_RMW           	  138447	    108967 ns/op	   54913 B/op	     177 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench	190.160s
+?   	github.com/alechenninger/go-ddd-bench/cmd/benchagg	[no test files]
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench/direct
+cpu: Apple M1 Pro
+BenchmarkDirect_RoundTrip_NoJSON 	 9530328	       242.7 ns/op	     544 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	 9647876	       243.0 ns/op	     544 B/op	       3 allocs/op
+BenchmarkDirect_RoundTrip_NoJSON 	 9840948	       249.8 ns/op	     544 B/op	       3 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench/direct	8.114s
+?   	github.com/alechenninger/go-ddd-bench/directflat	[no test files]
+goos: darwin
+goarch: arm64
+pkg: github.com/alechenninger/go-ddd-bench/encap
+cpu: Apple M1 Pro
+BenchmarkEncap_RoundTrip_NoJSON 	 5432695	       454.7 ns/op	     768 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	 5556012	       437.9 ns/op	     768 B/op	       5 allocs/op
+BenchmarkEncap_RoundTrip_NoJSON 	 5624256	       428.9 ns/op	     768 B/op	       5 allocs/op
+PASS
+ok  	github.com/alechenninger/go-ddd-bench/encap	8.963s
+?   	github.com/alechenninger/go-ddd-bench/internal/clock	[no test files]
